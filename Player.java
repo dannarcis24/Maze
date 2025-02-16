@@ -7,7 +7,7 @@ import java.io.Serializable;
 public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
     private String name, password;
-    private double highscore = 0;
+    private double highscore = -1;
     private long games = 0;
     private transient Color color = Color.BLUE;
 
@@ -35,7 +35,7 @@ public class Player implements Serializable {
     }
 
     public void updateScore(double score) {
-        if(score < highscore) highscore = score;
+        if(score < highscore || highscore == -1) highscore = score;
         games++;
     }
 
@@ -69,7 +69,7 @@ public class Player implements Serializable {
     }
 
     public double getHighscore() {
-        return highscore;
+        return (highscore == -1 ? 0 : highscore);
     }
 
     public long getGames() {
