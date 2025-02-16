@@ -3,14 +3,17 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class MazeGame extends JPanel implements KeyListener {
+public class MazeScreen extends JPanel implements KeyListener {
     private Maze maze;
     private int playerX = 0, playerY = 0;
     private final int CELL_SIZE = 40;
     private long start, end;
+    private Color playeColor;
 
-    public MazeGame() {
+    public MazeScreen(Color color) {
         maze = new Maze();
+        playeColor = color;
+
         setPreferredSize(new Dimension(10 * CELL_SIZE, 10 * CELL_SIZE));
         setFocusable(true);
         addKeyListener(this);
@@ -34,7 +37,7 @@ public class MazeGame extends JPanel implements KeyListener {
             }
         }
 
-        g.setColor(Color.BLUE);
+        g.setColor(playeColor);
         g.fillOval(playerY * CELL_SIZE + 10, playerX * CELL_SIZE + 10, 20, 20);
     }
 
@@ -54,9 +57,15 @@ public class MazeGame extends JPanel implements KeyListener {
         }
         if (maze.isExit(playerX, playerY)) {
             end = System.nanoTime();
-            String message = "You reached the exit in " + String.format("%.2f", (end - start) / 1_000_000_000.) + "s! Game Over.";
+            double score = (end - start) / 1_000_000_000.;
+            String message = "You reached the exit in " + String.format("%.2f", score) + "s! Game Over.";
+            Main.player.updateScore(score);
             JOptionPane.showMessageDialog(this, message);
-            System.exit(0);
+
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);;
+            frame.dispose();
+
+            new MainMenu();
         }
         
         repaint();
